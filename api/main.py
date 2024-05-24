@@ -22,6 +22,7 @@ mongo = MongoClient(MONGO_URI)
 
 @app.route('/')
 def index():
+    return redirect('login')
     email = session.get('email', None)
     return render_template('index.html', email=email)
 
