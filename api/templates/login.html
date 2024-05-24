@@ -6,19 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
   <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css">
+  <link rel="stylesheet" href="../static/css/bootstrap-4.3.1.css">
 </head>
 
-<body>
-  <div class="py-5 text-center" style="background-image: url('https://static.pingendo.com/cover-bubble-dark.svg');background-size:cover;">
+<body class="">
+  <div class="py-5 text-center" style="background-image: url(&quot;https://static.pingendo.com/cover-bubble-dark.svg&quot;); background-size: cover;">
     <div class="container">
       <div class="row">
-        <div class="mx-auto col-md-6 col-10 bg-white p-5">
+        <div class="mx-auto col-md-6 col-10 bg-white p-3" style="	border-top-left-radius: 10px;	border-top-right-radius: 10px;	border-bottom-left-radius: 10px;	border-bottom-right-radius: 10px;">
           <h1 class="mb-4">Log in</h1>
           <form action="/login" method="post">
-            <div class="form-group"> <input type="email" class="form-control" id="form9" placeholder="Email" name="email"> </div>
-            <div class="form-group mb-3"> <input type="password" class="form-control" placeholder="Password" id="form10" name="password"> <small class="form-text text-muted text-right">
+            <div class="form-group"> <input type="email" class="form-control" placeholder="Enter email" id="form9" name="email" required="required"> </div>
+            <div class="form-group mb-3"> <input type="password" class="form-control" placeholder="Password" id="form10" name="password" required="required"> <small class="form-text text-muted text-right">
                 <a href="#"> Recover password</a>
-              </small> </div> <button type="submit" class="btn btn-primary">Submit</button>
+              </small> </div> <button type="submit" class="btn btn-primary btn-block" style="">Submit</button>
           </form>
         </div>
       </div>
