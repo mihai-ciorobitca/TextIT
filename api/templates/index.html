@@ -63,19 +63,19 @@
     const messageContainer = document.getElementById("message-container");
     $(document).ready(function () {
         let socket = io();
-        $('#message-form').submit(function (event) {
+        $("#message-form").submit(function (event) {
             event.preventDefault();
-            const text = $('#message-input').val();
-            socket.emit('send_message', { text: text });
-            $('#message-input').val("");
+            const text = $("#message-input").val();
+            socket.emit("send_message", { text: text });
+            $("#message-input").val("");
         });
-        socket.on('new_message', function (data) {
+        socket.on("new_message", function (data) {
           const messageItem = document.createElement("div");
           messageItem.classList.add("bg-light", "rounded", "p-2", "mb-2", "align-self-end");
           messageItem.style.maxWidth = "75%";
           messageItem.textContent = data.text;
           $("#message-container").prepend(messageItem);
-          $('#message-input').val("");
+          $("#message-input").val("");
           $("#message-container").scrollTop = $("#message-container").scrollHeight;
         });
     });
