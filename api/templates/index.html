@@ -71,6 +71,17 @@
         const messageText = messageInput.val().trim();
 
         if (messageText) {
+          // Clear the input field and add the message to the chat box immediately
+          messageInput.val(''); // Clear the input field
+
+          const newMessage = $('<div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">')
+            .text(messageText);
+
+          messageContainer.append(newMessage);
+
+          // Scroll to the bottom of the message container
+          messageContainer.scrollTop(messageContainer[0].scrollHeight);
+
           const data = {
             message: messageText
           };
@@ -78,16 +89,6 @@
           $.post('/send-message', data)
             .done(function (response) {
               console.log('Success:', response);
-              messageInput.val(''); // Clear the input field
-
-              // Append the new message to the message container
-              const newMessage = $('<div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">')
-                .text(messageText);
-
-              messageContainer.append(newMessage);
-
-              // Scroll to the bottom of the message container
-              messageContainer.scrollTop(messageContainer[0].scrollHeight);
             })
             .fail(function (error) {
               console.error('Error:', error);
