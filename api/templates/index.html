@@ -25,11 +25,6 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGJva3hnZWZ6a2dtamxweG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY2MjE4MzgsImV4cCI6MjAzMjE5NzgzOH0.1mRW2FizO4Fg4kZY0942lBRJj5I9X4UO6ThKjS6kAQI";
-    const SUPABASE_URL = "https://dehbokxgefzkgmjlpxme.supabase.co";
-    const supabaseClient = await supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  </script>
 </head>
 
 <body class="d-flex flex-column m-0">
@@ -68,6 +63,9 @@
     $(document).ready(async function () {
       const messageContainer = $('#message-container');
       messageContainer.scrollTop(messageContainer[0].scrollHeight);
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGJva3hnZWZ6a2dtamxweG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY2MjE4MzgsImV4cCI6MjAzMjE5NzgzOH0.1mRW2FizO4Fg4kZY0942lBRJj5I9X4UO6ThKjS6kAQI";
+      const SUPABASE_URL = "https://dehbokxgefzkgmjlpxme.supabase.co";
+      const supabaseClient = await supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       const { data: messages, error } = await supabaseClient
         .from('messages')
         .select('*')
