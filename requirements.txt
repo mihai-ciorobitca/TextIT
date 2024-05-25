@@ -1,5 +1,5 @@
 Flask 
 pymongo[srv]
 python-dotenv
-flask_socketio
 supabase
+flask_bcrypt

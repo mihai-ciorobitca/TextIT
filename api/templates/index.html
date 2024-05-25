@@ -32,7 +32,7 @@
     <div class="text-white bg-light py-3 px-3">
       <h5 class="mb-0 text-dark">Chat Name</h5>
     </div>
-    <div class="p-3 d-flex flex-column-reverse align-items-end overflow-auto" id="message-container">
+    <div class="p-3 d-flex flex-column align-items-end overflow-auto" id="message-container">
       {% for message in messages %}
       {% if message.sender == email %}
       <div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">{{message.text}}</div>

@@ -1,17 +1,16 @@
-import os
+from os import environ
 from flask import Flask, render_template, redirect, session, request
 from supabase import create_client
 from dotenv import load_dotenv
-# from flask_bcrypt import Bcrypt
+from werkzeug.security import generate_password_hash, check_password_hash
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "1234567890"
-app.debug = True
 
-url = os.environ.get("SUPABASE_URL")
-key = os.environ.get("SUPABASE_KEY")
+url = environ.get("SUPABASE_URL")
+key = environ.get("SUPABASE_SECRET")
 supabase = create_client(url, key)
 
 @app.route('/')
@@ -26,10 +25,11 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        user = supabase.from_('users').select('*').eq('email', email).eq('password', password).execute()
-        if user:
-            session['email'] = email
-            return redirect("/")
+        user = supabase.table('users').select('*').eq('email', email).execute()
+        if user.data != []:
+            if check_password_hash(user.data[0]["password"], password):
+                session['email'] = email
+                return redirect("/")
     return render_template('login.html')
 
 @app.route('/send_message', methods=['POST'])

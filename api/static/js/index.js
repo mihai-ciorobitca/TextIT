@@ -15,16 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
     script.onload = () => {
       const supabase = initSupabase();
 
-      // Fetch initial messages
-      fetchMessages(supabase);
-
       // Subscribe to Supabase Realtime changes
       const channel = supabase
         .channel('public:messages')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
-          renderMessage(payload.new);
+          if (payload.eventType === 'INSERT') {
+            renderMessage(payload.new);
+          }
         })
         .subscribe();
+
+      // Fetch initial messages
+      fetchMessages(supabase);
     };
     script.onerror = (error) => {
       console.error('Error loading Supabase:', error);
@@ -81,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Render a message in the message container
   function renderMessage(message) {
     const messageItem = document.createElement("div");
     messageItem.classList.add("bg-light", "rounded", "p-2", "mb-2");
@@ -93,6 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
       messageItem.classList.add("align-self-start");
     }
     messageContainer.prepend(messageItem);
-    messageContainer.scrollTop = messageContainer.scrollHeight;
+    messageContainer.scrollTop = messageContainer.scrollHeight
   }
 });
