@@ -21,6 +21,10 @@
     }
   </style>
   <link rel="stylesheet" href="../static/css/bootstrap-4.3.1.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="../static/js/index.js"></script>
 </head>
 
 <body class="d-flex flex-column m-0">
@@ -30,11 +34,11 @@
     </div>
     <div class="p-3 d-flex flex-column-reverse align-items-end overflow-auto" id="message-container">
       {% for message in messages %}
-        {% if message.sender == email %}
-          <div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">{{message.text}}</div>
-        {% else %}
-          <div class="bg-light rounded p-2 mb-2 align-self-start" style="max-width: 75%;">{{message.text}}</div>
-        {% endif %}
+      {% if message.sender == email %}
+      <div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">{{message.text}}</div>
+      {% else %}
+      <div class="bg-light rounded p-2 mb-2 align-self-start" style="max-width: 75%;">{{message.text}}</div>
+      {% endif %}
       {% endfor %}
     </div>
     <div class="py-3 bg-light">
@@ -55,36 +59,6 @@
       </div>
     </div>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script>
-    const messageContainer = document.getElementById("message-container");
-    $(document).ready(function () {
-      let socket = io();
-      $("#message-form").submit(function (event) {
-        event.preventDefault();
-        const text = $("#message-input").val();
-        socket.emit("send_message", { text: text });
-        $("#message-input").val("");
-      });
-      socket.on("new_message", function (data) {
-        const messageItem = document.createElement("div");
-        messageItem.classList.add("bg-light", "rounded", "p-2", "mb-2");
-        messageItem.style.maxWidth = "75%";
-        messageItem.textContent = data.text;
-        if (data.sender === "{{ email }}") {
-          messageItem.classList.add("align-self-end");
-        } else {
-          messageItem.classList.add("align-self-start");
-        }
-        $("#message-container").prepend(messageItem);
-        $("#message-input").val("");
-        $("#message-container").scrollTop = $("#message-container").scrollHeight;
-      });
-    });
-  </script>
 </body>
 
 </html>
