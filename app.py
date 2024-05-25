@@ -10,7 +10,8 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.debug = True
 socketio = SocketIO(app)
 
-MONGO_URI = "mongodb+srv://mihaiciorobitca:R3dwaLL2013star@cluster.rsenaqq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster"
+MONGO_URI = "mongodb://localhost:27017/"
+#"mongodb+srv://mihaiciorobitca:R3dwaLL2013star@cluster.rsenaqq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster"
 mongo = MongoClient(MONGO_URI)
 
 @app.route('/')
@@ -37,6 +38,3 @@ def handle_message(data):
     sender = session["email"]
     mongo.db.messages.insert_one({"sender": sender, "text": text})
     emit("new_message", {"sender": sender, "text": text}, broadcast=True)
-
-if __name__ == "__main__":
-    socketio.run(app)
