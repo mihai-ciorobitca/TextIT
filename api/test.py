@@ -1,13 +1,25 @@
-import os
-from supabase import create_client
+from flask import Flask, render_template, request
 from dotenv import load_dotenv
-from werkzeug.security import generate_password_hash, check_password_hash
+import os
+from supabase import create_client, Client
 
 load_dotenv()
 
-url = os.environ.get("SUPABASE_URL")
-key = os.environ.get("SUPABASE_SECRET")
-supabase = create_client(url, key)
-messages = supabase.table("messages").select("*").execute()
+app = Flask(__name__)
 
-print(messages)
+supabase_url = os.environ.get("SUPABASE_URL")
+supabase_key = os.environ.get("SUPABASE_KEY")
+supabase: Client = create_client(supabase_url, supabase_key)
+
+@app.route("/")
+def index():
+    return render_template("test.html", supabase_url=supabase_url, supabase_key=supabase_key)
+
+@app.route("/send_message", methods=["POST"])
+def send_message():
+    message = request.form.get("message")
+    supabase.table("messages").insert({"content": message}).execute()
+    return "OK"
+
+if __name__ == "__main__":
+    app.run(debug=True)

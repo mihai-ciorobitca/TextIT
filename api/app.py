@@ -32,12 +32,10 @@ def login():
                 return redirect("/")
     return render_template('login.html')
 
-@app.route('/send_message', methods=['POST'])
+@app.route('/send-message', methods=['POST'])
 def send_message():
-    data = request.get_json()
+    text = request.form.get("message")
     sender = session.get('email')
-    text = data.get('text')
-
     supabase.table('messages').insert({'sender': sender, 'text': text}).execute()
     return {'success': True}
 
