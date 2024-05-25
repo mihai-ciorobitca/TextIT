@@ -38,3 +38,5 @@ def handle_message(data):
     sender = session["email"]
     mongo.db.messages.insert_one({"sender": sender, "text": text})
     emit("new_message", {"sender": sender, "text": text}, broadcast=True)
+
+app.run()
