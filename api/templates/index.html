@@ -24,6 +24,12 @@
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGJva3hnZWZ6a2dtamxweG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY2MjE4MzgsImV4cCI6MjAzMjE5NzgzOH0.1mRW2FizO4Fg4kZY0942lBRJj5I9X4UO6ThKjS6kAQI";
+    const SUPABASE_URL = "https://dehbokxgefzkgmjlpxme.supabase.co";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  </script>
 </head>
 
 <body class="d-flex flex-column m-0">
@@ -59,44 +65,54 @@
     </div>
   </div>
   <script>
-    $(document).ready(function () {
-      // Scroll to the bottom on page load
+    $(document).ready(async function () {
       const messageContainer = $('#message-container');
       messageContainer.scrollTop(messageContainer[0].scrollHeight);
-
-      $('#message-form').submit(function (event) {
-        event.preventDefault(); // Prevent the form from submitting normally
-
+      const { data: messages, error } = await supabaseClient
+        .from('messages')
+        .select('*')
+        .order('created_at', { ascending: true });
+      if (error) {
+        console.error('Error fetching messages:', error);
+        return;
+      }
+      messages.forEach(message => {
+        const alignment = message.sender === '{{email}}' ? 'align-self-end' : 'align-self-start';
+        const newMessage = $(`<div class="bg-light rounded p-2 mb-2 ${alignment}" style="max-width: 75%;">`).text(message.text);
+        messageContainer.append(newMessage);
+      });
+      messageContainer.scrollTop(messageContainer[0].scrollHeight);
+      $('#message-form').submit(async function (event) {
+        event.preventDefault();
         const messageInput = $('#message-input');
         const messageText = messageInput.val().trim();
-
         if (messageText) {
-          // Clear the input field and add the message to the chat box immediately
-          messageInput.val(''); // Clear the input field
-
-          const newMessage = $('<div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">')
-            .text(messageText);
-
+          messageInput.val('');
+          const newMessage = $('<div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">').text(messageText);
           messageContainer.append(newMessage);
-
-          // Scroll to the bottom of the message container
           messageContainer.scrollTop(messageContainer[0].scrollHeight);
-
-          const data = {
-            message: messageText
-          };
-
-          $.post('/send-message', data)
-            .done(function (response) {
-              console.log('Success:', response);
-            })
-            .fail(function (error) {
-              console.error('Error:', error);
-            });
+          const { error } = await supabaseClient
+            .from('messages')
+            .insert([{ sender: "{{email}}", text: messageText }]);
+          if (error) {
+            console.error('Error inserting message:', error);
+          }
         }
       });
+
+      supabaseClient
+        .from('messages')
+        .on('INSERT', payload => {
+          const message = payload.new;
+          const alignment = message.sender === "{{sender}}" ? 'align-self-end' : 'align-self-start';
+          const newMessage = $(`<div class="bg-light rounded p-2 mb-2 ${alignment}" style="max-width: 75%;">`).text(message.text);
+          messageContainer.append(newMessage);
+          messageContainer.scrollTop(messageContainer[0].scrollHeight);
+        })
+        .subscribe();
     });
   </script>
+
 </body>
 
 </html>

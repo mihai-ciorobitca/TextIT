@@ -16,8 +16,7 @@ supabase = create_client(url, key)
 @app.route('/')
 def index():
     if session.get('email', False):
-        messages = supabase.table("messages").select("*").execute()
-        return render_template('index.html', email=session["email"], messages=messages.data)
+        return render_template('index.html', email=session["email"])
     return redirect("/login")
 
 @app.route('/login', methods=['GET', 'POST'])
