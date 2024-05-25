@@ -63,51 +63,65 @@
     $(document).ready(async function () {
       const messageContainer = $('#message-container');
       messageContainer.scrollTop(messageContainer[0].scrollHeight);
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGJva3hnZWZ6a2dtamxweG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY2MjE4MzgsImV4cCI6MjAzMjE5NzgzOH0.1mRW2FizO4Fg4kZY0942lBRJj5I9X4UO6ThKjS6kAQI";
-      const SUPABASE_URL = "https://dehbokxgefzkgmjlpxme.supabase.co";
+      const SUPABASE_ANON_KEY = "{{supabase_anon_key}}";
+      const SUPABASE_URL = "{{supabase_url}}";
+      console.log(SUPABASE_ANON_KEY, SUPABASE_URL)
       const supabaseClient = await supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // Fetch initial messages
       const { data: messages, error } = await supabaseClient
         .from('messages')
         .select('*')
         .order('created_at', { ascending: true });
+
       if (error) {
         console.error('Error fetching messages:', error);
         return;
       }
+      else {
+        console.log('Fetched messages:', messages);
+      }
+
       messages.forEach(message => {
         const alignment = message.sender === '{{email}}' ? 'align-self-end' : 'align-self-start';
         const newMessage = $(`<div class="bg-light rounded p-2 mb-2 ${alignment}" style="max-width: 75%;">`).text(message.text);
         messageContainer.append(newMessage);
       });
+
       messageContainer.scrollTop(messageContainer[0].scrollHeight);
+
+      // Handle message form submission
       $('#message-form').submit(async function (event) {
         event.preventDefault();
         const messageInput = $('#message-input');
         const messageText = messageInput.val().trim();
         if (messageText) {
           messageInput.val('');
-          const newMessage = $('<div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">').text(messageText);
-          messageContainer.append(newMessage);
-          messageContainer.scrollTop(messageContainer[0].scrollHeight);
+
           const { error } = await supabaseClient
             .from('messages')
             .insert([{ sender: "{{email}}", text: messageText }]);
+
           if (error) {
             console.error('Error inserting message:', error);
           }
         }
       });
 
-      supabaseClient
-        .from('messages')
-        .on('INSERT', payload => {
+      // Set up real-time subscription
+      const messageChannel = supabaseClient.channel('public:messages')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, payload => {
           const message = payload.new;
-          const alignment = message.sender === "{{sender}}" ? 'align-self-end' : 'align-self-start';
+          const alignment = message.sender === '{{email}}' ? 'align-self-end' : 'align-self-start';
           const newMessage = $(`<div class="bg-light rounded p-2 mb-2 ${alignment}" style="max-width: 75%;">`).text(message.text);
           messageContainer.append(newMessage);
           messageContainer.scrollTop(messageContainer[0].scrollHeight);
         })
         .subscribe();
+
+      if (messageChannel.error) {
+        console.error('Error setting up subscription:', messageChannel.error);
+      }
     });
   </script>
 
