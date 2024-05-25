@@ -4,4 +4,4 @@ flaskwebgui
 python-dotenv
 flask_socketio
 flask_cors
-redis
+gunicorn
