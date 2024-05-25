@@ -30,7 +30,7 @@
     </div>
     <div class="p-3 d-flex flex-column-reverse align-items-end overflow-auto" id="message-container">
       {% for message in messages %}
-        {% if message.sender == session["email"] %}
+        {% if message.sender == email %}
           <div class="bg-light rounded p-2 mb-2 align-self-end" style="max-width: 75%;">{{message.text}}</div>
         {% else %}
           <div class="bg-light rounded p-2 mb-2 align-self-start" style="max-width: 75%;">{{message.text}}</div>
@@ -62,24 +62,29 @@
   <script>
     const messageContainer = document.getElementById("message-container");
     $(document).ready(function () {
-        let socket = io();
-        $("#message-form").submit(function (event) {
-            event.preventDefault();
-            const text = $("#message-input").val();
-            socket.emit("send_message", { text: text });
-            $("#message-input").val("");
-        });
-        socket.on("new_message", function (data) {
-          const messageItem = document.createElement("div");
-          messageItem.classList.add("bg-light", "rounded", "p-2", "mb-2", "align-self-end");
-          messageItem.style.maxWidth = "75%";
-          messageItem.textContent = data.text;
-          $("#message-container").prepend(messageItem);
-          $("#message-input").val("");
-          $("#message-container").scrollTop = $("#message-container").scrollHeight;
-        });
+      let socket = io();
+      $("#message-form").submit(function (event) {
+        event.preventDefault();
+        const text = $("#message-input").val();
+        socket.emit("send_message", { text: text });
+        $("#message-input").val("");
+      });
+      socket.on("new_message", function (data) {
+        const messageItem = document.createElement("div");
+        messageItem.classList.add("bg-light", "rounded", "p-2", "mb-2");
+        messageItem.style.maxWidth = "75%";
+        messageItem.textContent = data.text;
+        if (data.sender === "{{ email }}") {
+          messageItem.classList.add("align-self-end");
+        } else {
+          messageItem.classList.add("align-self-start");
+        }
+        $("#message-container").prepend(messageItem);
+        $("#message-input").val("");
+        $("#message-container").scrollTop = $("#message-container").scrollHeight;
+      });
     });
-</script>
+  </script>
 </body>
 
 </html>

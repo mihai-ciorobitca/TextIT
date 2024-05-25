@@ -1,7 +1,5 @@
 Flask 
 pymongo[srv]
-flaskwebgui
 python-dotenv
 flask_socketio
-flask_cors
-gunicorn
+supabase
