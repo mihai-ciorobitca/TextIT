@@ -11,7 +11,10 @@ app.secret_key = "1234567890"
 
 supabase_url = environ.get("SUPABASE_URL")
 supabase_anon_key = environ.get("SUPABASE_ANON_KEY")
-supabase = create_client(supabase_url, supabase_anon_key)
+supabase_secret = environ.get("SUPABASE_SECRET")
+
+supabaseUser = create_client(supabase_url, supabase_anon_key)
+supabaseAdmin = create_client(supabase_url, supabase_secret)
 
 @app.route('/')
 def index():
@@ -28,7 +31,7 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        user = supabase.table('users').select('*').eq('email', email).execute()
+        user = supabaseAdmin.table('users').select('*').eq('email', email).execute()
         if user.data != []:
             if check_password_hash(user.data[0]["password"], password):
                 session['email'] = email

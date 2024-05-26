@@ -1,13 +1,14 @@
 from supabase import create_client, Client
+from dotenv import load_dotenv
+from os import environ
 
+load_dotenv()
 
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGJva3hnZWZ6a2dtamxweG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY2MjE4MzgsImV4cCI6MjAzMjE5NzgzOH0.1mRW2FizO4Fg4kZY0942lBRJj5I9X4UO6ThKjS6kAQI"
-SUPABASE_URL = "https://dehbokxgefzkgmjlpxme.supabase.co"
+supabase_url = environ.get("SUPABASE_URL")
+supabase_secret = environ.get("SUPABASE_SECRET")
 
-supabaseClient: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
-email = "mihai@gmail.com"
+supabaseClient: Client = create_client(supabase_url, supabase_secret)
 
-
-status = supabaseClient.table('comments-2').select("*").execute()
+status = supabaseClient.table('users').insert([{"email": "email@gmail.co", "password": "password"}]).execute()
 
 print(status)
