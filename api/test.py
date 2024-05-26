@@ -1,17 +1,13 @@
-from flask import Flask, render_template, request
-from dotenv import load_dotenv
-import os
 from supabase import create_client, Client
 
-load_dotenv()
 
-app = Flask(__name__)
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlaGJva3hnZWZ6a2dtamxweG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTY2MjE4MzgsImV4cCI6MjAzMjE5NzgzOH0.1mRW2FizO4Fg4kZY0942lBRJj5I9X4UO6ThKjS6kAQI"
+SUPABASE_URL = "https://dehbokxgefzkgmjlpxme.supabase.co"
 
-supabase_url = os.environ.get("SUPABASE_URL")
-supabase_key = os.environ.get("SUPABASE_SECRET")
-supabase: Client = create_client(supabase_url, supabase_key)
+supabaseClient: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 email = "mihai@gmail.com"
 
-user = supabase.table('users').select('*').eq('email', email).execute()
 
-print(user)
+status = supabaseClient.table('comments-2').select("*").execute()
+
+print(status)

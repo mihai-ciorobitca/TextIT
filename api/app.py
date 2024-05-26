@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = "1234567890"
 
 supabase_url = environ.get("SUPABASE_URL")
-supabase_anon_key = environ.get("SUPABASE_SECRET")
+supabase_anon_key = environ.get("SUPABASE_ANON_KEY")
 supabase = create_client(supabase_url, supabase_anon_key)
 
 @app.route('/')
